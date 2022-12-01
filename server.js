@@ -1,9 +1,118 @@
-const express = require('express');
+import express from "express";
+
 const app = express();
 
 app.use(express.json());
 
 const movies = [
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
+  {
+    id: 1,
+    title: "SHREK 2",
+    genre: "Bestseller",
+    actors: [
+        1,
+        2,
+    ]
+  },
+  {
+    id: 2,
+    title: "Mary a tout prix",
+    genre: "Gel dans les cheveux",
+    actors: [
+        1,
+        3,
+    ]
+  },
   {
     id: 1,
     title: "SHREK 2",
@@ -46,15 +155,26 @@ const actors = [
 ];
 
 app.get('/api/movies', (req, res) => {
+
+    const length = req.query.length ? req.query.length : 50;
+    const offset = req.query.offset ? req.query.offset : 0;
+
     movies.map(movie => {
         movie.actors = movie.actors.map(actorId => {
-            return actors.find(actor => {
+            const actorss = actors.find(actor => {
                 return actor.id == actorId;
             });
+            return actors;
         });
         return movie;
     })
-    res.json(movies);
+
+    const array = [];
+    for (let i = offset ; i < offset + length ; i++) {
+        array.push(movies[i]);
+    }
+
+    res.json(array);
 });
 
 app.get('/api/movies/:id', (req, res) => {
@@ -66,10 +186,11 @@ app.get('/api/movies/:id', (req, res) => {
         res.status(404).json({error: "the movie with given id doesn't exist"});
     }
 
-    movie.actors = movie.actors.map(actorId => {
-        return actors.find(actor => {
+    movie.actors.map(actorId => {
+        const actors = actors.find(actor => {
             return actor.id == actorId;
         });
+        return actors;
     });
 
     res.json(movie);
@@ -151,6 +272,10 @@ app.patch('/api/actors/:id', (req, res) => {
 
     if (!actor) {
         res.status(404).json({error: "the actor with given id doesn't exist"});
+    }
+
+    if(!req.body.update_date) {
+        res.status(400).json();
     }
 
     actor.name = req.body.name || actor.name;
