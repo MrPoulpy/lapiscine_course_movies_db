@@ -37,6 +37,16 @@ app.get('/api/movies', (req, res) => {
 
 app.get('/api/movies/:id', (req, res) => {
 
+    db.query("SELECT * FROM movies WHERE id = ?", 
+    [req.params.id],
+    (err, result) => {
+        if (err) {
+            res.status(404).json();
+        } else {
+            res.json(result[0]);
+        }
+    });
+
 });
 
 app.put('/api/movies', (req, res) => {
@@ -47,7 +57,15 @@ app.put('/api/movies', (req, res) => {
         if (err) {
             res.status(404).json();
         } else {
-            res.json({ok: "ok"});
+            db.query("SELECT * FROM movies WHERE id = ?", 
+            [result.insertId],
+            (err, obj) => {
+                if (err) {
+                    res.status(404).json();
+                } else {
+                    res.status(201).json(obj[0]);
+                }
+            });
         }
     });
     
@@ -59,6 +77,16 @@ app.patch('/api/movies/:id', (req, res) => {
 
 app.delete('/api/movies/:id', (req, res) => {
     
+    db.query("DELETE FROM movies WHERE id = ? LIMIT 1", 
+    [req.params.id],
+    (err, result) => {
+        if (err) {
+            res.status(404).json();
+        } else {
+            res.status(204).json();
+        }
+    });
+
 });
 
 
