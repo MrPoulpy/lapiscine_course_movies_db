@@ -60,7 +60,7 @@ app.put('/api/movies', (req, res) => {
                 db.query("SELECT * FROM movies WHERE id = ?", 
                     [result.insertId],
                     (err, obj) => {
-                        if (err || result.length == 0) {
+                        if (err || obj.length == 0) {
                             res.status(404).json();
                         } else {
                             res.status(201).json(obj[0]);
