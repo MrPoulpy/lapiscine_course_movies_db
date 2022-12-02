@@ -40,7 +40,7 @@ app.get('/api/movies/:id', (req, res) => {
     db.query("SELECT * FROM movies WHERE id = ?", 
         [req.params.id],
         (err, result) => {
-            if (err) {
+            if (err || result.length == 0) {
                 res.status(404).json();
             } else {
                 res.json(result[0]);
@@ -60,7 +60,7 @@ app.put('/api/movies', (req, res) => {
                 db.query("SELECT * FROM movies WHERE id = ?", 
                     [result.insertId],
                     (err, obj) => {
-                        if (err) {
+                        if (err || result.length == 0) {
                             res.status(404).json();
                         } else {
                             res.status(201).json(obj[0]);
@@ -76,7 +76,7 @@ app.patch('/api/movies/:id', (req, res) => {
     db.query("SELECT * FROM movies WHERE id = ?",
         [req.params.id],
         (err, movie) => {
-            if (err) {
+            if (err || movie.length == 0) {
                 res.status(404).json();
             } else {
 
@@ -94,7 +94,7 @@ app.patch('/api/movies/:id', (req, res) => {
                         db.query("SELECT * FROM movies WHERE id = ?", 
                             [req.params.id], 
                             (err, obj) => {
-                                if (err) {
+                                if (err || obj.length == 0) {
                                     res.status(404).json();
                                 } else {
                                     res.status(202).json(obj[0]);
