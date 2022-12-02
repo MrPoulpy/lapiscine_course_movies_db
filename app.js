@@ -38,40 +38,74 @@ app.get('/api/movies', (req, res) => {
 app.get('/api/movies/:id', (req, res) => {
 
     db.query("SELECT * FROM movies WHERE id = ?", 
-    [req.params.id],
-    (err, result) => {
-        if (err) {
-            res.status(404).json();
-        } else {
-            res.json(result[0]);
-        }
-    });
+        [req.params.id],
+        (err, result) => {
+            if (err) {
+                res.status(404).json();
+            } else {
+                res.json(result[0]);
+            }
+        });
 
 });
 
 app.put('/api/movies', (req, res) => {
 
     db.query("INSERT INTO movies (title,genre,annee) VALUES (?, ?, ?)", 
-    [req.body.title, req.body.genre, req.body.annee], 
-    (err, result) => {
-        if (err) {
-            res.status(404).json();
-        } else {
-            db.query("SELECT * FROM movies WHERE id = ?", 
-            [result.insertId],
-            (err, obj) => {
-                if (err) {
-                    res.status(404).json();
-                } else {
-                    res.status(201).json(obj[0]);
-                }
-            });
-        }
+        [req.body.title, req.body.genre, req.body.annee], 
+        (err, result) => {
+            if (err) {
+                res.status(404).json();
+            } else {
+                db.query("SELECT * FROM movies WHERE id = ?", 
+                    [result.insertId],
+                    (err, obj) => {
+                        if (err) {
+                            res.status(404).json();
+                        } else {
+                            res.status(201).json(obj[0]);
+                        }
+                    });
+            }
     });
     
 });
 
 app.patch('/api/movies/:id', (req, res) => {
+
+    db.query("SELECT * FROM movies WHERE id = ?",
+        [req.params.id],
+        (err, movie) => {
+            if (err) {
+                res.status(404).json();
+            } else {
+
+                db.query("UPDATE movies SET title = ?, genre = ?, annee = ? WHERE id = ? LIMIT 1", 
+                [
+                    req.body.title || movie[0].title, 
+                    req.body.genre || movie[0].genre, 
+                    req.body.annee || movie[0].annee, 
+                    req.params.id
+                ], 
+                (err, result) => {
+                    if (err) {
+                        res.json(404).json();
+                    } else {
+                        db.query("SELECT * FROM movies WHERE id = ?", 
+                            [req.params.id], 
+                            (err, obj) => {
+                                if (err) {
+                                    res.status(404).json();
+                                } else {
+                                    res.status(202).json(obj[0]);
+                                }
+                        });
+                        
+                    }
+            });
+
+            }
+    });
 
 });
 
