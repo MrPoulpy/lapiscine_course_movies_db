@@ -89,7 +89,7 @@ app.patch('/api/movies/:id', (req, res) => {
                 ], 
                 (err, result) => {
                     if (err) {
-                        res.json(404).json();
+                        res.status(404).json();
                     } else {
                         db.query("SELECT * FROM movies WHERE id = ?", 
                             [req.params.id], 
